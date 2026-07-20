@@ -16,10 +16,10 @@
 
 ### `bash <(curl -sL bit.ly/easy-arch)`
 
-## Alternative Methods (manual)
+## Alternative Methods (manual) UPDATED FROM FORK FOR CupOS
 
 ```bash 
-wget -O easy-arch.sh https://raw.githubusercontent.com/classy-giraffe/easy-arch/main/easy-arch.sh
+wget -O easy-arch.sh https://raw.githubusercontent.com/Pedro30101/easy-arch-CupOS/refs/heads/main/easy-arch.sh
 chmod +x easy-arch.sh
 bash easy-arch.sh
 ```
