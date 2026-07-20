@@ -33,20 +33,20 @@ error_print () {
 virt_check () {
     hypervisor=$(systemd-detect-virt)
     case $hypervisor in
-        kvm )   info_print "KVM has been detected, setting up guest tools."
+        kvm )   info_print "KVM detected, setting up KVM guest tools."
                 pacstrap /mnt qemu-guest-agent &>/dev/null
                 systemctl enable qemu-guest-agent --root=/mnt &>/dev/null
                 ;;
-        vmware  )   info_print "VMWare Workstation/ESXi has been detected, setting up guest tools."
+        vmware  )   info_print "VMWare Workstation/ESXi Machine detected, setting up guest tools."
                     pacstrap /mnt open-vm-tools >/dev/null
                     systemctl enable vmtoolsd --root=/mnt &>/dev/null
                     systemctl enable vmware-vmblock-fuse --root=/mnt &>/dev/null
                     ;;
-        oracle )    info_print "VirtualBox has been detected, setting up guest tools."
+        oracle )    info_print "VirtualBox Machine detected, setting up guest tools."
                     pacstrap /mnt virtualbox-guest-utils &>/dev/null
                     systemctl enable vboxservice --root=/mnt &>/dev/null
                     ;;
-        microsoft ) info_print "Hyper-V has been detected, setting up guest tools."
+        microsoft ) info_print "Hyper-V detected, setting up Hyper-V guest tools."
                     pacstrap /mnt hyperv &>/dev/null
                     systemctl enable hv_fcopy_daemon --root=/mnt &>/dev/null
                     systemctl enable hv_kvp_daemon --root=/mnt &>/dev/null
@@ -73,7 +73,7 @@ kernel_selector () {
             return 0;;
         4 ) kernel="linux-zen"
             return 0;;
-        * ) error_print "You did not enter a valid selection, please try again."
+        * ) error_print "You DID NOT enter a VALID kernel selection, please try again."
             return 1
     esac
 }
@@ -187,10 +187,10 @@ rootpass_selector () {
 microcode_detector () {
     CPU=$(grep vendor_id /proc/cpuinfo)
     if [[ "$CPU" == *"AuthenticAMD"* ]]; then
-        info_print "An AMD CPU has been detected, the AMD microcode will be installed."
+        info_print "AMD CPU detected, the AMD microcode will be automatically installed for you."
         microcode="amd-ucode"
     else
-        info_print "An Intel CPU has been detected, the Intel microcode will be installed."
+        info_print "Intel CPU detected, the Intel microcode will be automatically installed for you."
         microcode="intel-ucode"
     fi
 }
@@ -249,15 +249,21 @@ keyboard_selector () {
 # Welcome screen.
 echo -ne "${BOLD}${BYELLOW}
 ======================================================================
-███████╗ █████╗ ███████╗██╗   ██╗      █████╗ ██████╗  ██████╗██╗  ██╗
-██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝     ██╔══██╗██╔══██╗██╔════╝██║  ██║
-█████╗  ███████║███████╗ ╚████╔╝█████╗███████║██████╔╝██║     ███████║
-██╔══╝  ██╔══██║╚════██║  ╚██╔╝ ╚════╝██╔══██║██╔══██╗██║     ██╔══██║
-███████╗██║  ██║███████║   ██║        ██║  ██║██║  ██║╚██████╗██║  ██║
-╚══════╝╚═╝  ╚═╝╚══════╝   ╚═╝        ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝
+ ▄▄▄▄▄▄▄▄▄▄▄  ▄         ▄  ▄▄▄▄▄▄▄▄▄▄▄       ▄▄▄▄▄▄▄▄▄▄▄  ▄▄▄▄▄▄▄▄▄▄▄ 
+▐░░░░░░░░░░░▌▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+▐░█▀▀▀▀▀▀▀▀▀ ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀█░▌     ▐░█▀▀▀▀▀▀▀█░▌▐░█▀▀▀▀▀▀▀▀▀ 
+▐░▌          ▐░▌       ▐░▌▐░▌       ▐░▌     ▐░▌       ▐░▌▐░▌          
+▐░▌          ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄█░▌     ▐░▌       ▐░▌▐░█▄▄▄▄▄▄▄▄▄ 
+▐░▌          ▐░▌       ▐░▌▐░░░░░░░░░░░▌     ▐░▌       ▐░▌▐░░░░░░░░░░░▌
+▐░▌          ▐░▌       ▐░▌▐░█▀▀▀▀▀▀▀▀▀      ▐░▌       ▐░▌ ▀▀▀▀▀▀▀▀▀█░▌
+▐░▌          ▐░▌       ▐░▌▐░▌               ▐░▌       ▐░▌          ▐░▌
+▐░█▄▄▄▄▄▄▄▄▄ ▐░█▄▄▄▄▄▄▄█░▌▐░▌               ▐░█▄▄▄▄▄▄▄█░▌ ▄▄▄▄▄▄▄▄▄█░▌
+▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌▐░▌               ▐░░░░░░░░░░░▌▐░░░░░░░░░░░▌
+ ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀  ▀                 ▀▀▀▀▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀ 
+                                                                      
 ======================================================================
 ${RESET}"
-info_print "Welcome to easy-arch, a script made in order to simplify the process of installing Arch Linux."
+info_print "Welcome to CupOS's installer, a fork of easy-arch to simplify the installation of CupOS"
 
 # Setting up keyboard layout.
 until keyboard_selector; do : ; done
@@ -482,5 +488,5 @@ for service in "${services[@]}"; do
 done
 
 # Finishing up.
-info_print "Done, you may now wish to reboot (further changes can be done by chrooting into /mnt)."
+info_print "Done, you may now wish to reboot and remove the ISO, USB Stick or DVD/Disk from the computer (further changes can be done by chrooting into /mnt)."
 exit
